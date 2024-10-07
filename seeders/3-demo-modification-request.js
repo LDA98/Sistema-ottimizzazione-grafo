@@ -7,8 +7,8 @@ module.exports = {
       {
         modelId: 1,
         userId: 3,
-        coordinates: '[[1, 2]]',
-        status: 'Pending',
+        coordinates: JSON.stringify([{ x: 1, y: 2 }]),
+        status: 'Rejected',
         tokensCost: 0.01,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -16,7 +16,34 @@ module.exports = {
       {
         modelId: 1,
         userId: 2,
-        coordinates: '[[5, 6], [7, 8], [3, 4]]',
+        coordinates: JSON.stringify([{ x: 5, y: 6 }, { x: 7, y: 8 }, { x: 3, y: 4 }]),
+        status: 'Pending',
+        tokensCost: 0.03,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        modelId: 1,
+        userId: 2,
+        coordinates: JSON.stringify([{ x: 2, y: 3 }, { x: 3, y: 3 }]),
+        status: 'Pending',
+        tokensCost: 0.02,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        modelId: 3,
+        userId: 3,
+        coordinates: JSON.stringify([{ x: 1, y: 2 }]),
+        status: 'Pending',
+        tokensCost: 0.01,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        modelId: 3,
+        userId: 2,
+        coordinates: JSON.stringify([{ x: 5, y: 6 }, { x: 7, y: 8 }, { x: 3, y: 4 }]),
         status: 'Pending',
         tokensCost: 0.03,
         createdAt: new Date(),
@@ -25,12 +52,12 @@ module.exports = {
       {
         modelId: 2,
         userId: 2,
-        coordinates: '[[2, 3], [3, 3]]',
+        coordinates: JSON.stringify([{ x: 2, y: 3 }, { x: 3, y: 3 }]),
         status: 'Pending',
         tokensCost: 0.02,
         createdAt: new Date(),
         updatedAt: new Date(),
-      },
+      }
     ]);
   },
 

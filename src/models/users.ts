@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../config/database';
+import Database from '../config/database';
 
 interface UserAttributes {
   id?: number;
@@ -18,6 +18,35 @@ class User extends Model<UserAttributes> implements UserAttributes {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  // Metodo per trovare un utente e controllare i token
+  public static async findUserAndCheckTokens(userId: number, tokensRequired: number): Promise<User> {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      const err = new Error('Utente non trovato');
+      err.name = 'Not_found';
+      throw err;
+    }
+    if (user.tokens < tokensRequired) {
+      const err = new Error('Credito insufficiente. Hai a disposizione ' + user.tokens);
+      err.name = 'Insufficient_credit';
+      throw err;
+    }
+    return user;
+  }
+
+  // Metodo per sottrarre i token
+  public static async deductTokens(userId: number, tokensToDeduct: number): Promise<number> {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      const err = new Error('Utente non trovato');
+      err.name = 'Not_found';
+      throw err;
+    }
+    user.tokens -= tokensToDeduct;
+    await user.save();
+    return user.tokens; // Restituisce il credito rimanente
+  }
 }
 
 User.init(
@@ -46,7 +75,7 @@ User.init(
     },
   },
   {
-    sequelize,
+    sequelize: Database.getInstance(),
     tableName: 'users',
   }
 );

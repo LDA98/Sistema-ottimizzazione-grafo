@@ -3,14 +3,21 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME!,
-  process.env.DB_USER!,
-  process.env.DB_PASS!,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-  }
-);
+class Database {
+    private static instance: Sequelize;
 
-export default sequelize;
+    private constructor() {}
+
+    public static getInstance(): Sequelize {
+        if (!Database.instance) {
+            Database.instance = new Sequelize(process.env.DB_NAME!, process.env.DB_USER!, process.env.DB_PASS!, {
+                host: process.env.DB_HOST,
+                dialect: 'postgres',
+                logging: false, 
+            });
+        }
+        return Database.instance;
+    }
+}
+
+export default Database;

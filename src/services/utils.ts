@@ -24,4 +24,37 @@ export const areValidCoordinates = (graph: any, coordinates: { x: number, y: num
       graph[x][y] !== undefined
     );
   };
+
+// Funzione per verificare la validità delle date se fornite
+export const validateDates = (startDate?: string, endDate?: string): void => {
+  if (startDate) {
+    const start = new Date(startDate);
+    if (isNaN(start.getTime())) {
+      const err = new Error('startDate non è valido. Assicurati di usare il formato YYYY-MM-DD.');
+      err.name = 'Not_valid';
+      throw err;
+    }
+  }
+
+  if (endDate) {
+    const end = new Date(endDate);
+    if (isNaN(end.getTime())) {
+      const err = new Error('endDate non è valido. Assicurati di usare il formato YYYY-MM-DD.');
+      err.name = 'Not_valid';
+      throw err;
+    }
+  }
+
+  // Se entrambe le date sono presenti, verifica che startDate sia precedente a endDate
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (start > end) {
+      const err = new Error(`Intervallo di date non valido. Data inizio ${startDate} e data fine ${endDate}.`);
+      err.name = 'Not_valid';
+      throw err;
+      }
+  }
+};
+  
   

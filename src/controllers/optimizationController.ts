@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { Op } from 'sequelize';
 import { AStarFinder } from 'astar-typescript';
 import User from '../models/users';
 import OptimizationModel from '../models/optimizationModel';
 import ModificationRequest from '../models/modificationRequest';
-import { isValidGraph, areValidCoordinates } from '../services/utils'
+import { isValidGraph, areValidCoordinates, validateDates } from '../services/utils'
 
 // Funzione per creare il modello di ottimizzazione
 const createOptimizationModel = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -26,32 +25,21 @@ const createOptimizationModel = async (req: Request, res: Response, next: NextFu
 
 
     // Trova l'utente che ha fatto la richiesta
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const err = new Error('Utente non trovato');
-      err.name = 'Not_found';
-      throw err;
-    }
-    if (user.tokens < tokensCost) {
-      const err = new Error('Credito insufficiente. Hai a disposizione ' + user.tokens);
-      err.name = 'Insufficient_credit';
-      throw err;
-    }
-
-    // Sottrae i token dall'utente
-    user.tokens -= tokensCost;
-    await user.save();
-
-    const remainingCredit = user.tokens;
+    const user = await User.findUserAndCheckTokens(userId, tokensCost);
+    await User.deductTokens(userId, tokensCost);
 
     // Crea il modello di ottimizzazione
-    const model = await OptimizationModel.create({
-      userId,
-      graph: JSON.stringify(graph),
-      tokensCost,
-    });
+    const model = await OptimizationModel.createModel(
+      userId, 
+      JSON.stringify(graph), 
+      tokensCost
+    );
 
-    return res.status(201).json({ message: 'Modello creato con successo', model, remainingCredit });
+    return res.status(201).json({ 
+      message: 'Modello creato con successo', 
+      model, 
+      remainingCredit: user.tokens 
+    });
   } catch (error) {
     next(error);
   }
@@ -65,33 +53,14 @@ const executeOptimizationModel = async (req: Request, res: Response, next: NextF
 
   try {
     // Trova il modello di ottimizzazione per l'utente
-    const model = await OptimizationModel.findByPk(modelId);
-    if (!model) {
-      const err = new Error('Modello non trovato');
-      err.name = 'Not_found';
-      throw err;
-    }
+    const model = await OptimizationModel.getModelById(Number(modelId));
 
     // Controlla il costo associato all'esecuzione
-    const cost = model.tokensCost;
+    const tokensCost = model.tokensCost;
 
     // Trova l'utente e verifica il saldo dei token
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const err = new Error('Utente non trovato');
-      err.name = 'Not_found';
-      throw err;
-    }
-
-    if (user.tokens < cost) {
-      const err = new Error('Credito insufficiente. Hai a disposizione ' + user.tokens);
-      err.name = 'Insufficient_credit';
-      throw err;    
-    }
-
-    // Sottrae i token dall'utente
-    user.tokens -= cost;
-    await user.save();
+    const user = await User.findUserAndCheckTokens(userId, tokensCost);
+    await User.deductTokens(userId, tokensCost);
 
     // Parse il grafo dal modello
     const graph = JSON.parse(model.graph);
@@ -114,7 +83,6 @@ const executeOptimizationModel = async (req: Request, res: Response, next: NextF
 
     // Calcola il percorso tra i nodi di partenza e arrivo
     const path  = aStarFinder.findPath(start, goal);
-
     if (!path || path.length === 0) {
       const err = new Error('Percorso non trovato tra i nodi di partenza e arrivo');
       err.name = 'Not_found';
@@ -126,14 +94,12 @@ const executeOptimizationModel = async (req: Request, res: Response, next: NextF
     // Calcola il tempo impiegato
     const executionTime = endTime - startTime; 
 
-    const remainingCredit = user.tokens;
-
     // Ritorna il risultato come JSON
     return res.status(200).json({
       path,
-      cost,
+      tokensCost,
       executionTime,
-      remainingCredit
+      remainingCredit: user.tokens
     });
   } catch (error) {
     next(error);
@@ -148,20 +114,13 @@ const createModificationRequest = async (req: Request, res: Response, next: Next
 
   try {
     // Verifica se il modello esiste
-    const model = await OptimizationModel.findByPk(modelId);
-    if (!model) {
-      const err = new Error('Modello non trovato');
-      err.name = 'Not_found';
-      throw err;
-    }
+    const model = await OptimizationModel.getModelById(Number(modelId));
+
+    // Controlla il costo associato all'esecuzione
+    const tokensCost = 0.01 * coordinates.length;
 
     // Trova l'utente che ha fatto la richiesta
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const err = new Error('Utente non trovato');
-      err.name = 'Not_found';
-      throw err;
-    }
+    const user = await User.findUserAndCheckTokens(userId, tokensCost);
 
     // Parse il grafo dal modello
     const graph = JSON.parse(model.graph);
@@ -171,35 +130,23 @@ const createModificationRequest = async (req: Request, res: Response, next: Next
       const err = new Error('Coordinate non valide');
       err.name = 'Not_valid';
       throw err;
-      
     }
 
-    // Calcola il costo dei token
-    const tokensCost = 0.01 * coordinates.length; //assumo che si paga per ogni coordinata
-
-    // Verifica se l'utente ha sufficiente credito in token
-    if (user.tokens < tokensCost) {
-      const err = new Error('Credito insufficiente. Hai a disposizione ' + user.tokens);
-      err.name = 'Insufficient_credit';
-      throw err;    
-    }
-
-    // Sottrae i token dall'utente
-    user.tokens -= tokensCost;
-    await user.save();
-
-    const remainingCredit = user.tokens;
+    await User.deductTokens(userId, tokensCost);
 
     // Crea la richiesta di modifica
     const modificationRequest = await ModificationRequest.create({
       modelId,
       userId,
       coordinates: JSON.stringify(coordinates),
-      status: 'Pending',
       tokensCost
     });
 
-    return res.status(201).json({ message: 'Richiesta di modifica creata con successo.', modificationRequest, remainingCredit });
+    return res.status(201).json({
+       message: 'Richiesta di modifica creata con successo.',
+       modificationRequest,
+       remainingCredit: user.tokens 
+    });
   } catch (error) {
     next(error);
   }
@@ -212,7 +159,6 @@ const updateModificationRequestStatus = async (req: Request, res: Response, next
   const userId = (req as any).userId;
 
   try {
-
     // Verifica che lo stato sia valido
     if (status !== 'Accepted' && status !== 'Rejected') {
       const err = new Error('Status non valido. Lo stato deve essere "Accepted" o "Rejected"');
@@ -220,53 +166,22 @@ const updateModificationRequestStatus = async (req: Request, res: Response, next
       throw err;
     }
 
-    // Trova la richiesta di modifica
-    const modificationRequest = await ModificationRequest.findByPk(requestId);
-    if (!modificationRequest) {
-      const err = new Error('Richiesta di modifica non trovata');
-      err.name = 'Not_found';
-      throw err;
-    }
+    // Trova la richiesta di modifica e controlla se è possibile aggiornare la richiesta
+    const modificationRequest = await ModificationRequest.verifyIsPossibleUpdate(Number(requestId));
 
     // Verifica che l'utente sia il creatore del modello
-    const model = await OptimizationModel.findByPk(modificationRequest.modelId);
-    if (!model || model.userId !== userId) {
-      const err = new Error('Non sei il creatore del modello');
-      err.name = 'Forbidden'; 
-      throw err;    
-     }
-
-     if (modificationRequest.status !== 'Pending') {
-      const err = new Error('Richiesta già : ' + modificationRequest.status);
-      err.name = 'Not_found';
-      throw err;
-    }
+    await OptimizationModel.checkUserOwnership(modificationRequest.modelId, userId);
+    const model = await OptimizationModel.getModelById(modificationRequest.modelId);
 
     // Aggiorna lo stato della richiesta di modifica
     if (status === 'Accepted') {
       // Applica le modifiche al modello
-      const graph = JSON.parse(model.graph);
-      const coordinates = JSON.parse(modificationRequest.coordinates);
-      coordinates.forEach(({ x, y }: { x: number, y: number }) => {
-        graph[x][y] = graph[x][y] === 0 ? 1 : 0;
-      });
-      model.graph = JSON.stringify(graph);
-      await model.save();
+      await model.applyChanges(modificationRequest.coordinates); // Chiama il metodo per applicare le modifiche
       // Rifiuta altre richieste di modifica 'Pending' per lo stesso modello
-      await ModificationRequest.update(
-        { status: 'Refused' },
-        {
-          where: {
-            modelId: modificationRequest.modelId,
-            id: { [Op.ne]: requestId }, // Escludi la richiesta corrente
-            status: 'Pending'
-          }
-        }
-      );
+      await ModificationRequest.refusePendingRequests(modificationRequest.modelId, Number(requestId));
     }
 
-    modificationRequest.status = status;
-    await modificationRequest.save();
+    await ModificationRequest.updateRequestStatus(modificationRequest, status); // Passa l'oggetto modifica
 
     return res.status(200).json({ message: `Richiesta di modifica ${status.toLowerCase()} con successo.` });
   } catch (error) {
@@ -281,23 +196,6 @@ const getModificationRequestsHistory = async (req: Request, res: Response, next:
   const { status } = req.query;
 
   try {
-    // Verifica che il modello esista
-    const model = await OptimizationModel.findByPk(modelId);
-    if (!model) {
-      const err = new Error('Modello non trovato');
-      err.name = 'Not_found';
-      throw err;
-    }
-
-
-    // Verifica che l'utente sia il creatore del modello
-    if (model.userId !== userId) {
-      const err = new Error('Non sei il creatore del modello');
-      err.name = 'Forbidden'; 
-      throw err;    
-    }
-
-
     // Verifica che lo stato sia valido
     const validStatuses = ['Pending', 'Accepted', 'Rejected', 'Refused'];
     if (status && !validStatuses.includes(status as string)) {
@@ -306,13 +204,12 @@ const getModificationRequestsHistory = async (req: Request, res: Response, next:
       throw err;
     }
 
-    // Ottieni lo storico delle richieste di modifica
-    const whereClause: any = { modelId };
-    if (status) {
-      whereClause.status = status;
-    }
+    // Verifica se il modello esiste
+    const model = await OptimizationModel.getModelById(Number(modelId));
+    await OptimizationModel.checkUserOwnership(model.id, userId);
 
-    const modificationRequests = await ModificationRequest.findAll({ where: whereClause });
+    // Ottieni lo storico delle richieste di modifica
+    const modificationRequests = await ModificationRequest.getModificationRequestsByModelId(Number(modelId), status as string);
 
     return res.status(200).json({ modificationRequests });
   } catch (error) {
@@ -326,68 +223,13 @@ const getModificationRequests = async (req: Request, res: Response, next: NextFu
   const { startDate, endDate } = req.query; 
 
   try {
-    // Verifica che il modello esista
-    const model = await OptimizationModel.findByPk(modelId);
-    if (!model) {
-      const err = new Error('Modello non trovato');
-      err.name = 'Not_found';
-      throw err;
-    }
+    // Verifica se il modello esiste
+    await OptimizationModel.findModelById(Number(modelId));
 
-    // Costruisce i filtri per la data
-    const dateFilter: any = {};
-    let start: Date | null = null;
-    let end: Date | null = null;
+    // Validazione delle date se presenti
+    validateDates(startDate as string, endDate as string);
 
-    // Controllo e validazione delle date
-    if (startDate) {
-      const startString = startDate as string; // Cast a string
-      start = new Date(startDate as string);
-      const isValidStartDate = startString.match(/^\d{4}-\d{2}-\d{2}$/);
-      
-      if (!isValidStartDate || isNaN(start.getTime())) {
-        const err = new Error('startDate non è valido. Assicurati di usare il formato YYYY-MM-DD.');
-        err.name = 'Not_valid';
-        throw err;
-      }
-      dateFilter[Op.gte] = start;
-    }
-
-    if (endDate) {
-      const endString = endDate as string; // Cast a string
-      end = new Date(endDate as string);
-      const isValidEndDate = endString.match(/^\d{4}-\d{2}-\d{2}$/);
-
-      if (!isValidEndDate || isNaN(end.getTime())) {
-        const err = new Error('endDate non è valido. Assicurati di usare il formato YYYY-MM-DD.');
-        err.name = 'Not_valid';
-        throw err;
-      }
-      dateFilter[Op.lte] = end;
-    }
-
-    // Se entrambe le date sono presenti, verifica che startDate sia precedente a endDate
-    if (start && end && start > end) {
-      const err = new Error(`Intervallo di date non valido. Data inizio ${startDate} e data fine ${endDate}.`);
-      err.name = 'Not_valid';
-      throw err;
-    }
-
-    // Trova tutte le richieste di modifica per il modello specifico, applicando i filtri di data se presenti
-    const modificationRequests = await ModificationRequest.findAll({
-      where: {
-        modelId,
-        status: 'Accepted',
-        ...(Object.keys(dateFilter).length > 0 && { updatedAt: dateFilter }),
-      },
-    });
-
-    // Se non vengono trovate richieste di modifica
-    if (modificationRequests.length === 0) {
-      const err = new Error(`Nessuna richiesta di modifica trovata tra ${startDate ?? 'inizio'} ed ${endDate ?? 'fine'}.`);
-      err.name = 'Not_found';
-      throw err;
-    }
+    const modificationRequests = await ModificationRequest.getModificationRequestsByModelIdAndDate(Number(modelId), startDate as string, endDate as string);
 
     return res.status(200).json(modificationRequests);
   } catch (error) {
