@@ -30,7 +30,7 @@ export const validateDates = (startDate?: string, endDate?: string): void => {
   if (startDate) {
     const start = new Date(startDate);
     if (isNaN(start.getTime())) {
-      const err = new Error('startDate non è valido. Assicurati di usare il formato YYYY-MM-DD.');
+      const err = new Error('La data di inizio non è valida. Assicurati di usare il formato YYYY-MM-DD.');
       err.name = 'Not_valid';
       throw err;
     }
@@ -39,7 +39,7 @@ export const validateDates = (startDate?: string, endDate?: string): void => {
   if (endDate) {
     const end = new Date(endDate);
     if (isNaN(end.getTime())) {
-      const err = new Error('endDate non è valido. Assicurati di usare il formato YYYY-MM-DD.');
+      const err = new Error('La data di fine non è valida. Assicurati di usare il formato YYYY-MM-DD.');
       err.name = 'Not_valid';
       throw err;
     }

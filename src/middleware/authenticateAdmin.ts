@@ -7,7 +7,7 @@ class AuthenticateAdmin implements Handler {
     try {
       const userId = (req as any).userId;
 
-      const user = await User.findByPk(userId);
+      const user = await User.findUserOrCheckTokens(userId);
 
       if (!user || !user.isAdmin) {
         const err = new Error('Accesso negato: permessi amministrativi richiesti');

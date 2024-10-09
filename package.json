@@ -4,9 +4,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc",
-    "dev": "ts-node-dev --respawn src/index.ts"
+    "build": "npx tsc",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "npx sequelize-cli db:seed:all"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",

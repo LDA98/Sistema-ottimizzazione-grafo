@@ -8,13 +8,7 @@ class CheckUserTokens implements Handler {
 
     try {
       // Trova l'utente per ID
-      const user = await User.findByPk(userId);
-
-      if (!user) {
-        const err = new Error('Utente non trovato');
-        err.name = 'Not_found';
-        throw err;
-      }
+      const user = await User.findUserOrCheckTokens(userId);
 
       // Verifica se l'utente ha 0 token
       if (user.tokens <= 0) {
@@ -23,7 +17,7 @@ class CheckUserTokens implements Handler {
         throw err;
       }
 
-      next(); // L'utente ha sufficienti token, quindi prosegui
+      next(); // L'utente ha ancora token, quindi prosegui
     } catch (error) {
       next(error);
     }

@@ -19,15 +19,27 @@ class User extends Model<UserAttributes> implements UserAttributes {
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
+  // Metodo per ottenere l'utente dall'e-mail
+  public static async getUserByEmail(email: string): Promise<User> {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      const err = new Error('Utente non trovato');
+      err.name = 'Not_found';
+      throw err;
+    }
+    return user;
+  }
+
+
   // Metodo per trovare un utente e controllare i token
-  public static async findUserAndCheckTokens(userId: number, tokensRequired: number): Promise<User> {
+  public static async findUserOrCheckTokens(userId: number, tokensRequired?: number): Promise<User> {
     const user = await User.findByPk(userId);
     if (!user) {
       const err = new Error('Utente non trovato');
       err.name = 'Not_found';
       throw err;
     }
-    if (user.tokens < tokensRequired) {
+    if (tokensRequired && user.tokens < tokensRequired) {
       const err = new Error('Credito insufficiente. Hai a disposizione ' + user.tokens);
       err.name = 'Insufficient_credit';
       throw err;

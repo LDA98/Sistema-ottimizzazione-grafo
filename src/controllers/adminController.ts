@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/users';
 
-export const rechargeUserCredits = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+class AdminController {
+  async rechargeUserCredits(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
   const { email, newCredits } = req.body;
 
   try {
@@ -13,12 +14,7 @@ export const rechargeUserCredits = async (req: Request, res: Response, next: Nex
     }
 
     // Trova l'utente tramite email
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      const err = new Error('Utente non trovato');
-      err.name = 'Not_found';
-      throw err;      
-    }
+    const user = await User.getUserByEmail(email);
 
     // Ricarica il credito dell'utente
     user.tokens += newCredits; // Aggiunge i nuovi crediti
@@ -28,6 +24,8 @@ export const rechargeUserCredits = async (req: Request, res: Response, next: Nex
   } catch (error) {
     next(error);
   }
-};
+  };
+}
 
+export default new AdminController();
 

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:14
@@ -28,6 +26,17 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+
+    command: >
+      sh -c "
+      while ! nc -z db 5432; do sleep 1; done;
+      npx sequelize-cli db:migrate;
+      if [ \$(PGPASSWORD=$DB_PASS psql -h $DB_HOST -U $DB_USER -d $DB_NAME -tAc 'SELECT COUNT(*) FROM users;') -eq 0 ]; then
+        npx sequelize-cli db:seed:all;
+      fi;
+      npm start
+      "
+
 
 volumes:
   pgdata:

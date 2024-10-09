@@ -15,7 +15,7 @@ class AuthenticateJWT implements Handler {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET!);
       (req as any).userId = (decoded as any).userId; // Estrai userId dal token decodificato
-      next();
+      next(); // utente autenticato può continuare la richiesta
     } catch (err) {
       const error = new Error('Token non valido');
       error.name = 'Forbidden';

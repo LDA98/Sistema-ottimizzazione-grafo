@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { register, login } from '../controllers/userController';
+import UserController from '../controllers/userController';
 
 
 const router = Router();
 
 // Rotte utenti
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', UserController.register);
+router.post('/login', UserController.login);
 
 export default router;
