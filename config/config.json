@@ -1,0 +1,13 @@
+{
+  "development": {
+    "username": "prog_user",
+    "password": "password",
+    "database": "prog_pa_db",
+    "host": "db",
+    "dialect": "postgres"
+  },
+  "test": {
+  },
+  "production": {
+  }
+}

@@ -20,6 +20,3 @@ docker-compose.override.yml
 
 README.md
 
-config/
-
-models/
