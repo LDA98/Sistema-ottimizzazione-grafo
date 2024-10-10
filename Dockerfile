@@ -4,7 +4,6 @@ FROM node:18
 # Installa netcat-openbsd
 RUN apt-get update && apt-get install -y netcat-openbsd postgresql-client
 
-
 # Imposta la directory di lavoro nel contenitore
 WORKDIR /app
 
@@ -12,11 +11,11 @@ WORKDIR /app
 COPY package*.json ./ 
 COPY tsconfig.json ./
 
+# Copia tutto il resto del codice dell'app
+COPY src src
+
 # Installa le dipendenze
 RUN npm install
-
-# Copia tutto il resto del codice dell'app
-COPY . .
 
 # Esegui un'attesa per il DB prima delle migrazioni e del seeding
 CMD ["npm", "start"]
