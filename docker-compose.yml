@@ -25,7 +25,6 @@ services:
       - db
     volumes:
       - .:/app
-      - /app/node_modules
 
     command: >
       sh -c "

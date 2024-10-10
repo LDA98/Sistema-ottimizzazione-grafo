@@ -12,9 +12,6 @@ npm-debug.log*
 # Compiled files
 dist/
 
-# VSCode settings
-.vscode/
-
 # Docker
 docker-compose.override.yml
 
