@@ -11,17 +11,17 @@ WORKDIR /app
 COPY package*.json ./ 
 COPY tsconfig.json ./
 
-# Copia tutto il resto del codice dell'app
-COPY . .
-
 # Installa le dipendenze
 RUN npm install
 
-# Esegui un'attesa per il DB prima delle migrazioni e del seeding
-CMD ["npm", "start"]
+# Copia tutto il resto del codice dell'app
+COPY . .
 
 # Compila il TypeScript
 RUN npm run build
+
+# Esegui un'attesa per il DB prima delle migrazioni e del seeding
+CMD ["npm", "start"]
 
 # Esponi la porta su cui l'app gira
 EXPOSE 3000
