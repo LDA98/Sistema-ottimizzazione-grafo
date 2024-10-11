@@ -12,7 +12,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Copia tutto il resto del codice dell'app
-COPY src src
+COPY . .
 
 # Installa le dipendenze
 RUN npm install
