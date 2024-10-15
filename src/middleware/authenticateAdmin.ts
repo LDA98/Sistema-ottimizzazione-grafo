@@ -4,8 +4,10 @@ import { Handler } from '../interfaces/Handler';
 
 class AuthenticateAdmin implements Handler {
 
-  // Implementa il metodo `handle` definito nell'interfaccia `Handler`
-  // Metodo che gestisce l'autenticazione di un utente admin
+  /*
+    Implementa il metodo `handle` definito nell'interfaccia `Handler`
+    Metodo che gestisce l'autenticazione di un utente admin
+  */ 
   async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Estrae l'ID utente dalla richiesta (iniettato nel middleware di autenticazione JWT)

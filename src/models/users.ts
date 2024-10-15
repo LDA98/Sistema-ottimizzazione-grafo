@@ -1,15 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import Database from '../config/database';
 
-interface UserAttributes {
-  id?: number;
-  email: string;
-  password: string;
-  tokens?: number;
-  isAdmin?: boolean;
-}
-
-class User extends Model<UserAttributes> implements UserAttributes {
+class User extends Model{
   public id!: number;
   public email!: string;
   public password!: string;

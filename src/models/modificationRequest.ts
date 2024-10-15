@@ -1,7 +1,6 @@
 import { Model, DataTypes, Op } from 'sequelize';
 import Database from '../config/database';
 
-
 class ModificationRequest extends Model {
   public id!: number;
   public modelId!: number;

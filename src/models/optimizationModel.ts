@@ -1,14 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import Database from '../config/database';
 
-interface OptimizationModelAttributes {
-  id?: number;
-  userId: number;
-  graph: string; 
-  tokensCost: number; 
-}
-
-class OptimizationModel extends Model<OptimizationModelAttributes> implements OptimizationModelAttributes {
+class OptimizationModel extends Model {
   public id!: number;
   public userId!: number;
   public graph!: string;

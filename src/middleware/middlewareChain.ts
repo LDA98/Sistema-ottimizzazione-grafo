@@ -22,7 +22,7 @@ class MiddlewareChain {
           if (err) {
             next(err); // Passa l'errore al middleware di gestione degli errori
           } else {
-            executeHandler(index + 1); // Chiamate ricorsiva per passare al prossimo handler
+            executeHandler(index + 1); // Chiamata ricorsiva per passare al prossimo handler
           }
         });
       } else {
