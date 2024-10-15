@@ -14,8 +14,8 @@ Il pattern MVC è un'architettura software che separa un'applicazione in tre com
 
 Nel progetto "Sistema di Ottimizzazione su Grafo", il pattern MVC è stato implementato in questo modo, senza l'utilizzo della view:
 - **Models**: Le classi `User`, `OptimizationModel` e `ModificationRequest` rappresentano i modelli, gestendo le interazioni con il database utilizzando Sequelize.
-- **Controllers**: Le classi come `OptimizationController` e `AdminController` gestiscono la logica di business, elaborando le richieste degli utenti e comunicando con i modelli.
-- **Routes**: Le rotte definiscono come le richieste HTTP siano mappate ai controller.
+- **Controllers**: Le classi come `UserController`, `OptimizationController` e `AdminController` gestiscono la logica di business, elaborando le richieste degli utenti e comunicando con i modelli.
+- **Routes**: Le rotte definiscono come le richieste HTTP siano mappate ai controller, divise in `userRoutes` ed `optimizationRoutes`.
 
 ### 2. Singleton
 
