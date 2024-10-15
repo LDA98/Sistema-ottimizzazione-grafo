@@ -54,6 +54,6 @@ Per testare il progetto, puoi utilizzare la collezione Postman fornita. Clicca s
 
 Puoi anche avviare il progetto utilizzando il seguente comando:
 
-bash
+```bash
 docker-compose up --build
 
