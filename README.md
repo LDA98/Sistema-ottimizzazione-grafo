@@ -14,6 +14,8 @@ Il seguente diagramma rappresenta i casi d'uso del "Sistema di Ottimizzazione su
 
 ![Casi d'Uso](images/CasiDuso.png)
 
+*Figura 2: Caso d'Uso.*
+
 </div>
 
 
@@ -22,23 +24,24 @@ Il seguente diagramma rappresenta i casi d'uso del "Sistema di Ottimizzazione su
 ### 1. Model-View-Controller (MVC)
 
 Nel progetto "Sistema di Ottimizzazione su Grafo", il pattern MVC è stato implementato in questo modo, senza l'utilizzo della view:
-- **Models**: Le classi `User`, `OptimizationModel` e `ModificationRequest` rappresentano i modelli, gestendo le interazioni con il database utilizzando Sequelize.
-- **Controllers**: Le classi come `UserController`, `OptimizationController` e `AdminController` gestiscono la logica di business, elaborando le richieste degli utenti e comunicando con i modelli.
-- **Routes**: Le rotte definiscono come le richieste HTTP siano mappate ai controller, divise in `userRoutes` ed `optimizationRoutes`.
+- **Models**: Le classi User, OptimizationModel e ModificationRequest rappresentano i modelli, gestendo le interazioni con il database utilizzando Sequelize.
+- **Controllers**: Le classi come UserController, OptimizationController e AdminController gestiscono la logica di business, elaborando le richieste degli utenti e comunicando con i modelli.
+- **Routes**: Le rotte definiscono come le richieste HTTP siano mappate ai controller, divise in userRoutes ed optimizationRoutes.
 
 ### 2. Singleton
 
 Il pattern Singleton è un pattern creazionale che garantisce che una classe abbia una sola istanza e fornisce un punto di accesso globale a quella istanza.
 
-Nel progetto, il pattern Singleton è stato utilizzato per la classe `Database`, che gestisce la connessione al database PostgreSQL. La classe `Database` ha un metodo statico `getInstance()` che restituisce un'istanza unica di `Sequelize`. Se l'istanza non esiste, viene creata una nuova istanza; altrimenti, viene restituita l'istanza esistente. Questo approccio garantisce che l'applicazione utilizzi sempre la stessa connessione al database.
+Nel progetto, il pattern Singleton è stato utilizzato per la classe Database, che gestisce la connessione al database PostgreSQL. La classe Database ha un metodo statico getInstance() che restituisce un'istanza unica di Sequelize. Se l'istanza non esiste, viene creata una nuova istanza; altrimenti, viene restituita l'istanza esistente. Questo approccio garantisce che l'applicazione utilizzi sempre la stessa connessione al database.
 
 ### 3. Chain of Responsibility (CoR)
 
 Il pattern Chain of Responsibility permette di passare una richiesta lungo una catena di gestori. Ogni gestore decide se elaborare la richiesta o passarla al successivo.
 
-Nel progetto, il pattern CoR è stato implementato per gestire i middleware nella nostra applicazione Express, come mostrato nella figura 2. È stata creata una classe `MiddlewareChain` che consente di aggiungere gestori (handler) alla catena. Ogni handler è responsabile per l'elaborazione della richiesta e può decidere di passare la richiesta al successivo nella catena. Questo approccio consente un flusso di controllo più chiaro e gestisce eventuali errori in modo centralizzato.
+Nel progetto, il pattern CoR è stato implementato per gestire i middleware nella nostra applicazione Express, come mostrato nella figura 2. È stata creata una classe MiddlewareChain che consente di aggiungere gestori (handler) alla catena. Ogni handler è responsabile per l'elaborazione della richiesta e può decidere di passare la richiesta al successivo nella catena. Questo approccio consente un flusso di controllo più chiaro e gestisce eventuali errori in modo centralizzato.
 
 <div align="center">
+
 ![CoR](images/CoR.png)
 
 *Figura 2: Middleware.*
@@ -48,9 +51,10 @@ Nel progetto, il pattern CoR è stato implementato per gestire i middleware nell
 
 Per testare il progetto, puoi utilizzare la collezione Postman fornita. Clicca sul link qui sotto per scaricare il file JSON:
 
-[Scarica Postman Collection](.test/TestProgettoPA.postman_collection.json)
+[Scarica Postman Collection](test/TestProgettoPA.postman_collection.json)
 
 Puoi anche avviare il progetto utilizzando il seguente comando:
 
-```bash
+bash
 docker-compose up --build
+
