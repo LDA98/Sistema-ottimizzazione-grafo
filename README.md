@@ -2,6 +2,17 @@
 
 Il progetto "Sistema di Ottimizzazione su Grafo" è un'applicazione web progettata lato back-end per gestire modelli di ottimizzazione su grafi. Utilizza l'algoritmo A* per calcolare i percorsi ottimali tra nodi, permettendo agli utenti di creare ed eseguire i modelli di ottimizzazione ed effettuare e gestire le richieste di modifica, in base al credito residuo degli utenti. L'applicazione è costruita utilizzando Node.js, Express e Sequelize per l'interazione con un database PostgreSQL.
 
+## Diagramma dei Casi d'Uso
+
+Il seguente diagramma rappresenta i casi d'uso del "Sistema di Ottimizzazione su Grafo". Gli attori principali del sistema includono il Visitatore, l'Amministratore (Admin) e l'Utente. 
+
+- **Visitatore**: può registrarsi e accedere al sistema.
+- **Utente**: una volta registrato, l'Utente ha accesso a diverse funzionalità, tra cui la creazione di modelli, l'esecuzione di modelli e la richiesta di modifiche. Inoltre, può visualizzare lo storico degli aggiornamenti del modello e ricaricare i propri crediti.
+- **Admin**: gestisce le richieste di modifica degli utenti, con la possibilità di accettarle o rifiutarle. Inoltre, può visualizzare lo storico delle richieste di modifica.
+
+![Diagramma dei Casi d'Uso](images/CasiDuso.png)
+
+
 ## Patterns Utilizzati
 
 ### 1. Model-View-Controller (MVC)
