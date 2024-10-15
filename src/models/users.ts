@@ -30,7 +30,6 @@ class User extends Model<UserAttributes> implements UserAttributes {
     return user;
   }
 
-
   // Metodo per trovare un utente e controllare i token
   public static async findUserOrCheckTokens(userId: number, tokensRequired?: number): Promise<User> {
     const user = await User.findByPk(userId);
@@ -58,6 +57,12 @@ class User extends Model<UserAttributes> implements UserAttributes {
     user.tokens -= tokensToDeduct;
     await user.save();
     return user.tokens; // Restituisce il credito rimanente
+  }
+
+  // Metodo per ricaricare il credito degli utenti
+  public static async rechargeTokens(user: User, tokensToRecharge: number): Promise<void>{
+    user.tokens += tokensToRecharge; 
+    await user.save(); 
   }
 }
 

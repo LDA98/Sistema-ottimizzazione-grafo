@@ -21,7 +21,7 @@ module.exports = {
       },
       tokens: {
         type: Sequelize.FLOAT,
-        defaultValue: 1, // valore iniziale per i token
+        defaultValue: 10, 
       }, 
       isAdmin: {
         type: Sequelize.BOOLEAN,

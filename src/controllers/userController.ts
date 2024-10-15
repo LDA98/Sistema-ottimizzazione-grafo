@@ -5,11 +5,15 @@ import User from '../models/users';
 
 
 class UserController{
+
+  // Funzione per la registrazione
   async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     const { email, password, isAdmin } = req.body;
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Crea un nuovo utente
       const newUser = await User.create({
         email,
         password: hashedPassword,
@@ -24,10 +28,12 @@ class UserController{
     }
   };
 
+  // Funzione per il login
   async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     const { email, password } = req.body;
 
     try {
+      // Verifica ed ottiene l'utente data l'email
       const user = await User.getUserByEmail(email as string);
 
       // Confronta la password

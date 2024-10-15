@@ -12,8 +12,6 @@ npm-debug.log*
 # Compiled files
 dist/
 
-# Docker
-docker-compose.override.yml
-
-README.md
+# Package-lock
+package-lock.json
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Handler } from '../interfaces/Handler'; // Importa l'interfaccia Handler
+import { Handler } from '../interfaces/Handler'; 
 
 class MiddlewareChain {
   private handlers: Handler[] = [];
@@ -22,7 +22,7 @@ class MiddlewareChain {
           if (err) {
             next(err); // Passa l'errore al middleware di gestione degli errori
           } else {
-            executeHandler(index + 1); // Passa al prossimo handler
+            executeHandler(index + 1); // Chiamate ricorsiva per passare al prossimo handler
           }
         });
       } else {

@@ -8,7 +8,7 @@ import MiddlewareChain from '../middleware/middlewareChain';
 
 const router = Router();
 
-// Creiamo le istanze degli handler
+// Crea le istanze degli handler
 const authenticateJWT = new AuthenticateJWT();
 const checkUserTokens = new CheckUserTokens();
 const authenticateAdmin = new AuthenticateAdmin();

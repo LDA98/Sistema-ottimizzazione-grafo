@@ -4,8 +4,8 @@ import Database from '../config/database';
 interface OptimizationModelAttributes {
   id?: number;
   userId: number;
-  graph: string; // JSON string per il grafo
-  tokensCost: number; // Costo in token per la creazione
+  graph: string; 
+  tokensCost: number; 
 }
 
 class OptimizationModel extends Model<OptimizationModelAttributes> implements OptimizationModelAttributes {

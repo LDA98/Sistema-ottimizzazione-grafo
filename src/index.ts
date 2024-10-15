@@ -19,10 +19,10 @@ app.get('/', (req, res) => {
 });
 
 // Rotte utenti
-app.use('/api/users', userRoutes);
+app.use('/users', userRoutes);
 
 // Rotte per i modelli di ottimizzazione
-app.use('/api/optimizations', optimizationRoutes);
+app.use('/optimizations', optimizationRoutes);
 
 app.use(errorHandler);
 

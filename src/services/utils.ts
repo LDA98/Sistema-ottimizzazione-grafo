@@ -19,13 +19,14 @@ export const isValidGraph = (graph: any): boolean => {
 // Funzione per verificare la validità delle coordinate
 export const areValidCoordinates = (graph: any, coordinates: { x: number, y: number }[]): boolean => {
     return coordinates.every(({ x, y }) => 
-      Array.isArray(graph) && 
-      Array.isArray(graph[x]) && 
-      graph[x][y] !== undefined
-    );
-  };
+      // Controlla che x e y siano definiti e maggiori o uguali a zero
+      x !== undefined && y !== undefined && x >= 0 && y >= 0 &&
+      // Controlla che le coordinate siano comprese nei limiti della matrice
+      graph[x] !== undefined && graph[x][y] !== undefined
+  );
+};
 
-// Funzione per verificare la validità delle date se fornite
+// Funzione per verificare la validità delle date
 export const validateDates = (startDate?: string, endDate?: string): void => {
   if (startDate) {
     const start = new Date(startDate);
