@@ -73,16 +73,16 @@ class OptimizationController {
                 grid: { matrix: graph },
             });
             const path = aStarFinder.findPath(start, goal);
-            if (!path || path.length === 1) {
-                const err = new Error(!path ? 'Percorso non trovato tra i nodi di partenza e arrivo' : 'Le coordinate start e goal sono uguali. Devono essere diverse.');
+            if (!path || path.length === 0 || path.length === 1) {
+                const err = new Error(path.length === 1 ? 'Le coordinate start e goal sono uguali. Devono essere diverse.' : 'Percorso non trovato tra i nodi di partenza e arrivo');
                 err.name = 'Not_found';
                 throw err;
             }
             const endTime = Date.now();
 
             // Tempo di esecuzione
-            const executionTime = endTime - startTime;
-
+            const executionTime = (endTime - startTime) / 1000; 
+            
             return res.status(200).json({
                 path,
                 tokensCost,
