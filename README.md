@@ -10,7 +10,11 @@ Il seguente diagramma rappresenta i casi d'uso del "Sistema di Ottimizzazione su
 - **Utente**: una volta registrato, l'Utente ha accesso a diverse funzionalità, tra cui la creazione di modelli, l'esecuzione di modelli e la richiesta di modifiche. Inoltre, può visualizzare lo storico degli aggiornamenti del modello e ricaricare i propri crediti.
 - **Admin**: gestisce le richieste di modifica degli utenti, con la possibilità di accettarle o rifiutarle. Inoltre, può visualizzare lo storico delle richieste di modifica.
 
-![Diagramma dei Casi d'Uso](images/CasiDuso.png)
+<div align="center">
+
+![Casi d'Uso](images/CasiDuso.png)
+
+</div>
 
 
 ## Patterns Utilizzati
