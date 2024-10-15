@@ -4,17 +4,18 @@ Il progetto "Sistema di Ottimizzazione su Grafo" è un'applicazione web progetta
 
 ## Diagramma dei Casi d'Uso
 
-Il diagramma raffigurato nella figura 1, rappresenta i casi d'uso del "Sistema di Ottimizzazione su Grafo". Gli attori principali del sistema includono il Visitatore, l'Amministratore (Admin) e l'Utente. 
+Il seguente diagramma rappresenta i casi d'uso del "Sistema di Ottimizzazione su Grafo". Gli attori principali del sistema includono il Visitatore, l'Amministratore (Admin) e l'Utente. 
 
 - **Visitatore**: può registrarsi e accedere al sistema.
-- **Utente**: effettuato il login, l'Utente ha accesso a diverse funzionalità, tra cui la creazione di modelli, l'esecuzione di modelli, la richiesta di modifiche e la visualizzazione dello storico degli aggiornamenti. Esclusivamente il proprietario del modello, dunque l'utente che lo ha creato, può visualizzare lo storico delle richieste di modifica ed accettarle o rifiutarle.
-- **Admin**: oltre ad aver le stesse funzionalità e restrizioni dell'Utente, l'Admin può ricaricare il credito di un Utente.
+- **Utente**: una volta registrato, l'Utente ha accesso a diverse funzionalità, tra cui la creazione di modelli, l'esecuzione di modelli e la richiesta di modifiche. Inoltre, può visualizzare lo storico degli aggiornamenti del modello e ricaricare i propri crediti.
+- **Admin**: gestisce le richieste di modifica degli utenti, con la possibilità di accettarle o rifiutarle. Inoltre, può visualizzare lo storico delle richieste di modifica.
 
 <div align="center">
+
 ![Casi d'Uso](images/CasiDuso.png)
 
-*Figura 1: Diagramma dei Casi d'Uso.*
 </div>
+
 
 ## Patterns Utilizzati
 
